@@ -1,12 +1,13 @@
 import pymysql
-# database connecion and data extraction
+import time
+# connection to mysql
 connection = pymysql.connect(host='localhost',
                                   user='root',
-				  password='admin',
-				  db='Products')
-# query
+                                  password='admin',
+                                  db='Products')
+# cursor used to exec queries
 cursor = connection.cursor()
-
+# write HTML page
 file = open('/var/www/html/index.html', 'w')
 
 file.write('<!DOCTYPE html>')
@@ -24,21 +25,44 @@ file.write('\n        <h3 id="date"></h3>')
 file.write('\n    </div>')
 file.write('\n<table style="border-collapse: collapse; width: 80%; margin: 0px auto;" cellpadding="0" cellspacing="0" border="none" >')
 file.write('\n    <tr>')
-file.write('\n        <th>Product Name</th>')
-file.write('\n        <th>Website</th>')
-file.write('\n        <th>Price</th>')
+file.write('\n        <th>Item Name</th>')
+file.write('\n        <th>Item Number</th>')
+file.write('\n        <th>Sportys<br>www.sportys.com/pilotshop</th>')
+file.write('\n        <th>Aircraft Spruce<br>www.aircraftspruce.com</th>')
+file.write('\n        <th>Marv Golden<br>www.marvgolden.com</th>')
+file.write('\n        <th>Pilot Mall<br>www.pilotmall.com</th>')
+file.write('\n        <th>Gulf Coast<br>www.gulfcoastavionics.com</th>')
+file.write('\n        <th>Amazon<br>www.amazon.com</th>')
+file.write('\n        <th>Skygeek<br>www.skygeek.com</th>')
 file.write('\n    </tr>')
-cursor.execute('select * from tProducts;')
-data = cursor.fetchall()
-for row in data:
-    product_name = row[1]
-    product_seller = row[2]
-    product_price = str(row[3])
+cursor.execute('select * from tSportys;')
+
+
+# write data to table
+cursor.execute('select * from tSportys;')
+sportys_data = cursor.fetchall()
+cursor.execute('select * from tAircraftSpruce;')
+aircraftspruce_data = cursor.fetchall()
+cursor.execute('select * from tMarvGolden;')
+marvgolden_data = cursor.fetchall()
+count = 0
+for row in sportys_data:
+    spruce = aircraftspruce_data[count]
+    marv = marvgolden_data[count]
+    count += 1
     file.write('\n    <tr>')
-    file.write('\n        <td>' + str(product_name) + '</td>')
-    file.write('\n        <td>' + str(product_seller) + '</td>')
-    file.write('\n        <td>' + str(product_price) + '</td>')
+    file.write('\n        <td>' + row[1] + '</td>')
+    file.write('\n        <td>' + row[2] + '</td>')
+    file.write('\n        <td><a href="' + row[4] + '" target="_blank">' + row[3] + '</td>')
+    file.write('\n        <td><a href="' + spruce[2] + '" target="_blank">' + spruce[1] + '</td>')
+    file.write('\n        <td><a href="' + spruce[2] + '" target="_blank">' + marv[1] + '</td>')
+    file.write('\n        <td>Pilot price</td>')
+    file.write('\n        <td>Gulf price</td>')
+    file.write('\n        <td>Amazon price</td>')
+    file.write('\n        <td>Skygeek price</td>')
     file.write('\n    </tr>')
+# file.write('\n        <td><a href="' + product_url + '" target="_blank">' + product_price + '</td>')
+# write tAircraftSpruce data to table
 
 file.write('\n</body>')
 file.write('\n</html>')
@@ -52,4 +76,6 @@ file.write('\n    document.getElementById("date").innerHTML = m + "/" + d + "/" 
 file.write('\n</script>')
 
 file.close()
+
 print('HTML Page Generated. View at 10.10.11.106')
+
